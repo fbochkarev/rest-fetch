@@ -17,7 +17,7 @@ $(document).ready(function () {
 $(document).ready(function () {
     $('.table .eBtnDelete').on('click', function (event) {
         event.preventDefault();
-/*        var href = $(this).attr('href');
+        var href = $(this).attr('href');
 
         $.get(href, function (user, status) {
             $('.myFormDelete #id').val(user.id);
@@ -25,7 +25,7 @@ $(document).ready(function () {
             $('.myFormDelete #lastName').val(user.lastName);
             $('.myFormDelete #email').val(user.email);
             $('.myFormDelete #roles').val(user.roles);
-        })*/
+        })
 
         $('.myFormDelete #exampleModalDelete').modal();
     });
