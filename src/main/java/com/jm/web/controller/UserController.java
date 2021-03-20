@@ -25,19 +25,11 @@ public class UserController {
         return "/index";
     }
 
-    @GetMapping(value = {"/admin/test"})
-    public String test(Model model) {
-        model.addAttribute("users", userService.listUsers());
-        return "test1";
-    }
-
     @GetMapping("/admin/users")
     public String userList(Model model) {
-        List<User> users = userService.listUsers();
         User user = new User();
         model.addAttribute("user", user);
         model.addAttribute("rolesFromController", roleService.listRoles());
-        model.addAttribute("users", users);
         return "users";
     }
 
@@ -50,50 +42,6 @@ public class UserController {
     @ModelAttribute("navbarUser")
     public User initializeRoles(@AuthenticationPrincipal User navbarUser) {
         return navbarUser;
-    }
-
-    @PostMapping("/admin/saveUser")
-    public String saveUser(@ModelAttribute("user") User user, @RequestParam("roles") String[] rolesFromHtml) {
-        // save user to database
-        System.out.println(getClass() + " - saveUserBefore - " + user);
-        Set<Role> roleSet = user.getRoles();
-        for (String roleId : rolesFromHtml) {
-            roleSet.add(roleService.findOne(Long.valueOf(roleId))); // создадим Set с одним значением
-        }
-        System.out.println(getClass() + " - saveUserAfter - " + user);
-        System.out.println(getClass() + " - rolesFromHtml - " + Arrays.toString(rolesFromHtml));
-        userService.add(user);
-        return "redirect:/admin/users";
-    }
-
-    @GetMapping("/admin/showNewUserForm")
-    public String showNewUserForm(Model model) {
-        // create model attribute to bind form data
-        User user = new User();
-        model.addAttribute("user", user);
-        model.addAttribute("rolesFromController", roleService.listRoles());
-        return "new_user";
-    }
-
-    @GetMapping("/admin/showFormForUpdate/{id}")
-    public String showFormForUpdate(@PathVariable(value = "id") long id, Model model) {
-        // get user from the service
-        User userFromDB = userService.getUserById(id);
-        userFromDB.setPassword("");
-        model.addAttribute("userFromDB", userFromDB);
-        return "update_user";
-    }
-
-    @GetMapping("admin/findOne")
-    @ResponseBody
-    public User findOne(long id) {
-        return userService.getUserById(id);
-    }
-
-    @PostMapping("/admin/deleteUser")
-    public String deleteUser(@ModelAttribute("user") User user) {
-        userService.removeUser(user.getId());
-        return "redirect:/admin/users";
     }
 
 

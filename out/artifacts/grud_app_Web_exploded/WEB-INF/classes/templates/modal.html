@@ -34,6 +34,17 @@
                                 <label for="formEmail" class="col-form-label">email:</label>
                                 <input type="text" class="form-control" id="formEmail" name="email" value=""/>
                             </div>
+<!--                            <div class="form-group">
+                                <label for="editRoles" class="col-form-label">roles:</label>
+                                <select id="editRoles" name="roles" multiple size="2" required
+                                        class="form-control">
+                                    <option th:each="initializeRoles:${rolesFromController}"
+                                            th:value="${initializeRoles.getId()}"
+                                            th:text="${initializeRoles.getName()}">
+                                    </option>
+                                </select>
+                            </div>-->
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary closeBtn" data-dismiss="modal">Close</button>
@@ -51,12 +62,13 @@
     <!-- Delete Modal -->
     <div class="myFormDelete">
         <form th:action="@{/admin/rest/user/} " id="deleteUser">
+            <!--        <form th:action="@{/admin/rest/user/{id}(id=${user.id})}" method="DELETE">-->
             <div class="modal fade" id="exampleModalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabelDelete">Delete</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -77,9 +89,24 @@
                                 <label for="deleteEmail" class="col-form-label">email:</label>
                                 <input type="text" readonly class="form-control" id="deleteEmail" name="email" value=""/>
                             </div>
+                            <!--<div class="form-group">
+                                <div class="form-group">
+                                    <label for="roles" class="col-form-label">roles:</label>
+                                    &lt;!&ndash;                                    <input type="text" readonly class="form-control" id="roles" name="roles" value=""/>&ndash;&gt;
+                                    &lt;!&ndash;                                    <label for="roles" class="col-form-label">roles:</label>&ndash;&gt;
+                                    <select id="roles" readonly name="roles" multiple size="2" required
+                                            class="form-control">
+                                        <option th:each="initializeRoles:${rolesFromController}"
+                                                th:value="${initializeRoles.getId()}"
+                                                th:text="${initializeRoles.getName()}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>-->
+
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary closeBtn" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <input type="submit" class="btn btn-warning" value="Delete"/>
                         </div>
                     </div>

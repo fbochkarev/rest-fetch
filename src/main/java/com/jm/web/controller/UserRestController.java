@@ -1,21 +1,18 @@
 package com.jm.web.controller;
 
-import com.jm.model.Role;
 import com.jm.model.User;
 import com.jm.service.RoleService;
+import com.jm.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.jm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.Set;
 
 @org.springframework.web.bind.annotation.RestController
 public class UserRestController {
@@ -60,21 +57,26 @@ public class UserRestController {
         return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/admin/rest/user/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<User> update(@PathVariable int id, @RequestBody User user) {
+    @RequestMapping(value = "/admin/rest/user/", method = RequestMethod.PUT)
+    public ResponseEntity<User> update(@RequestBody User user) {
         LOG.info("Updating user: {}", user);
-        User currentUser = userService.getUserById(id);
+/*        User currentUser = userService.getUserById(id);
 
         if (currentUser == null) {
             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-        }
+        }*/
 
 /*        currentUser.setId(user.getId());
         currentUser.setName(user.getName());*/
 
         userService.add(user);
-        return new ResponseEntity<User>(currentUser, HttpStatus.OK);
+        return new ResponseEntity<User>(user, HttpStatus.OK);
     }
+
+/*    @DeleteMapping("admin/rest/user/{id}")
+    public void deleteUser(@PathVariable("id") Long id) {
+        userService.removeUser(id);
+    }*/
 
     @RequestMapping(value = "/admin/rest/user/", method = RequestMethod.DELETE)
     public ResponseEntity<Void> delete(@RequestBody User user) {

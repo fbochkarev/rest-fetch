@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+            crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+<!-- create navigation bar ( header) -->
+<header th:insert="layout/general.html :: header"></header>
+
+<!-- Delete Modal -->
+<div class="myFormDelete">
+    <form th:action="@{/admin/rest/user/} " id="deleteUser">
+        <!--        <form th:action="@{/admin/rest/user/{id}(id=${user.id})}" method="DELETE">-->
+        <div class="modal fade" id="exampleModalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" class="form-control" id="deleteId" name="id" value=""/>
+                        <div class="form-group">
+                            <label for="deleteFirstName" class="col-form-label">username:</label>
+                            <input type="text" readonly class="form-control" id="deleteFirstName" name="username"
+                                   value=""/>
+                        </div>
+                        <div class="form-group">
+                            <label for="deleteLastName" class="col-form-label">lastname:</label>
+                            <input type="text" readonly class="form-control" id="deleteLastName" name="lastName"
+                                   value=""/>
+                        </div>
+                        <div class="form-group">
+                            <label for="deleteEmail" class="col-form-label">email:</label>
+                            <input type="text" readonly class="form-control" id="deleteEmail" name="email" value=""/>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label for="roles" class="col-form-label">roles:</label>
+                                <!--                                    <input type="text" readonly class="form-control" id="roles" name="roles" value=""/>-->
+                                <!--                                    <label for="roles" class="col-form-label">roles:</label>-->
+                                <select id="roles" readonly name="roles" multiple size="2" required
+                                        class="form-control">
+                                    <option th:each="initializeRoles:${rolesFromController}"
+                                            th:value="${initializeRoles.getId()}"
+                                            th:text="${initializeRoles.getName()}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-warning" value="Delete"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<table class="table" id="usersTable">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>User Email</th>
+        <!--        <th>Roles</th>-->
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody id="tableData">
+
+    </tbody>
+</table>
+<script type="text/javascript" th:src="@{/static/js/tableBody.js}"></script>
+<script>
+
+    
+
+    document.getElementById('usersTable').addEventListener('click', (e) => {
+        e.preventDefault();
+        let deleteButtonIsPressed = e.target.id === 'delete-user';
+        let editButtonIsPressed = e.target.id === 'edit-user';
+
+        let id = e.target.parentElement.id;
+
+        let url = 'http://localhost:8080/admin/rest/user';
+        // delete user
+        if (deleteButtonIsPressed) {
+            fetch(`${url}/${id}`, {
+                method: 'GET'
+            })
+                .then(res => res.json())
+                .then(user => {
+                    document.getElementById('deleteId').value = `${user.id}`;
+                    document.getElementById('deleteFirstName').value = `${user.username}`;
+                    document.getElementById('deleteLastName').value = `${user.lastName}`;
+                    document.getElementById('deleteEmail').value = `${user.email}`;
+                })
+            $('#exampleModalDelete').modal('show');
+        }
+
+        // edit modal
+        if (editButtonIsPressed) {
+            // fetch(`${url}/${id}`, {
+            //     method: 'GET'
+            // })
+            //
+            //     .then(res => res.json())
+            //     .then(user => {
+            //         document.getElementById('formId').value = `${user.id}`;
+            //         document.getElementById('formFirstName').value = `${user.firstName}`;
+            //         document.getElementById('formLastName').value = `${user.lastName}`;
+            //         document.getElementById('formAge').value = `${user.age}`;
+            //         document.getElementById('formEmail').value = `${user.username}`;
+            //         document.getElementById('formPassword').value = ``;
+            //     })
+            $('#exampleModal').modal('show');
+        }
+    })
+
+    // $(document).ready(function () {
+    //     $('#deleteButton').on('click', function (event) {
+    // event.preventDefault();
+    // var href = $(this).attr('href');
+    //
+    // $.get(href, function (user, status) {
+    //     $('.myFormDelete #id').val(user.id);
+    //     $('.myFormDelete #username').val(user.username);
+    //     $('.myFormDelete #lastName').val(user.lastName);
+    //     $('.myFormDelete #email').val(user.email);
+    //     $('.myFormDelete #roles').val(user.roles);
+    // })
+
+    //     $('.myFormDelete #exampleModalDelete').modal('show');
+    // });
+
+    //submit delete user in model
+    document.getElementById('deleteUser').addEventListener('submit', submitFormDeleteUser);
+
+    function submitFormDeleteUser(event) {
+        event.preventDefault();
+
+        let formData = new FormData(event.target);
+
+        let obj = {};
+        formData.forEach((value, key) => obj[key] = value);
+
+        let request = new Request(event.target.action, {
+            method: 'DELETE',
+            body: JSON.stringify(obj),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        console.log(request);
+
+        fetch(request).then(
+            function (response) {
+                console.log(response);
+            },
+            function (error) {
+                console.error(error);
+            }
+        )
+
+        $('#exampleModalDelete').modal('hide');
+    }
+
+    // close modal
+    $('.modal').click(function () {
+        $('.cover, .modal, .content').modal('hide');
+    });
+</script>
+<!--<script type="text/javascript" th:src="@{/static/js/main.js}"></script>-->
+</body>
+</html>
