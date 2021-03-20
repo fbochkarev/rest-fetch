@@ -14,4 +14,6 @@ public interface UserDao {
     List<User> listUsers();
 
     User getUserByName(String name);
+
+    boolean exists(User user);
 }

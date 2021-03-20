@@ -1,3 +1,19 @@
+/*$(document).ready(function () {
+    $('.table .eBtn').on('click', function (event) {
+        event.preventDefault();
+        var href = $(this).attr('href');
+
+        $.get(href, function (user, status) {
+            $('.myForm #id').val(user.id);
+            $('.myForm #username').val(user.username);
+            $('.myForm #lastName').val(user.lastName);
+            $('.myForm #email').val(user.email);
+        })
+
+        $('.user #userProfile');
+    });
+});*/
+
 $(document).ready(function () {
     $('.table .eBtn').on('click', function (event) {
         event.preventDefault();

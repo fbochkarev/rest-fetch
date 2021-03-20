@@ -14,11 +14,12 @@
 
     <script type="text/javascript"
             src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+
     <script type="text/javascript" th:src="@{/static/js/main.js}"></script>
 
-<!--    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
-            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-            crossorigin="anonymous"></script>-->
+    <!--    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+                integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+                crossorigin="anonymous"></script>-->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
@@ -79,8 +80,8 @@
                                 <th>Delete</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr th:each="user : ${users}">
+                            <tbody id="tableData">
+                            <tr th:each="user : ${users}" id="eventCount">
                                 <td th:text="${user.id}"></td>
                                 <td th:text="${user.username}"></td>
                                 <td th:text="${user.lastName}"></td>
@@ -93,12 +94,12 @@
                                     </table>
                                 </td>
                                 <td>
-                                    <a th:href="@{findOne/(id=${user.id})}" class="btn btn-primary eBtn">
+                                    <a th:href="@{rest/user/{id}(id=${user.id})}" class="btn btn-primary eBtn">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                 </td>
                                 <td>
-                                    <a th:href="@{findOne/(id=${user.id})}" class="btn btn-danger eBtnDelete">
+                                    <a th:href="@{rest/user/{id}(id=${user.id})}" class="btn btn-danger eBtnDelete">
 <!--                                    <a th:href="@{/admin/deleteUser/{id}(id=${user.id})}" class="btn btn-danger">-->
                                         <i class="bi bi-trash"></i>
                                     </a>
@@ -117,23 +118,23 @@
 
                     <div class="pt-3 pl-3 pr-3 bg-white border">
                         <div class="justify-content-center">
-                            <form action="#" class="form-group" th:action="@{/admin/saveUser}" modelAttribute="user"
-                                  th:object="${user}"
+                            <form action="#" class="form-group" th:action="@{/admin/rest/user/}" modelAttribute="user"
+                                  th:object="${user}" id="createUser"
                                   method="POST">
 
-                                <p><input type="text" th:field="*{username}"
+                                <p><input type="text" th:field="*{username}" name="username"
                                           placeholder="User Name" class="form-control mb-4 col-4"></p>
 
-                                <p><input type="text" th:field="*{password}"
+                                <p><input type="text" th:field="*{password}" name="password"
                                           placeholder="Password" class="form-control mb-4 col-4"></p>
 
-                                <p><input type="text" th:field="*{lastName}"
+                                <p><input type="text" th:field="*{lastName}" name="lastName"
                                           placeholder="User Last Name" class="form-control mb-4 col-4"></p>
 
-                                <p><input type="text" th:field="*{email}"
+                                <p><input type="text" th:field="*{email}" name="email"
                                           placeholder="User Email" class="form-control mb-4 col-4"></p>
 
-                                <p><select id="editRoles" th:field="*{roles}" name="roles" multiple size="2" required
+                                <p><select id="editRoles" th:field="*{roles}" name="roles.id" multiple size="2" required
                                            class="form-control mb-4 col-4">
                                     <option th:each="initializeRoles:${rolesFromController}"
                                             th:value="${initializeRoles.getId()}"
@@ -152,6 +153,125 @@
     </div>
 </div>
 
+<!--Send json to rest in submit from modal (put & delete)-->
+<script>
+    document.getElementById('createUser').addEventListener('submit', submitFormCreateUser);
+    document.getElementById('deleteUser').addEventListener('submit', submitFormDeleteUser);
+
+    function submitFormCreateUser(event) {
+        event.preventDefault();
+
+        let formData = new FormData(event.target);
+
+        let obj = {};
+        formData.forEach((value, key) => obj[key] = value);
+
+        console.log(obj);
+
+        let request = new Request(event.target.action, {
+            method: 'POST',
+            body: JSON.stringify(obj),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        console.log(request);
+
+        fetch(request).then(
+            function(response) {
+                console.log(response);
+            },
+            function(error) {
+                console.error(error);
+            }
+        );
+
+        console.log('?????? ????????????');
+    }
+
+    function submitFormDeleteUser(event) {
+        event.preventDefault();
+
+        let formData = new FormData(event.target);
+
+        let obj = {};
+        formData.forEach((value, key) => obj[key] = value);
+
+        let request = new Request(event.target.action, {
+            method: 'DELETE',
+            body: JSON.stringify(obj),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        console.log(request);
+
+        fetch(request).then(
+            function(response) {
+                console.log(response);
+            },
+            function(error) {
+                console.error(error);
+            }
+        )
+
+        console.log('?????? ????????????');
+        $('#exampleModalDelete').modal('hide');
+    }
+</script>
+<!--<script>
+    fetch("http://localhost:8080/admin/rest/users").then(
+        res => {
+            res.json().then(
+                data => {
+                    console.log(data);
+                    if (data.length > 0) {
+                        var temp = "";
+
+                        data.forEach((user) => {
+                            temp += "<tr>";
+                            temp += "<td>" + user.id + "</td>";
+                            temp += "<td>" + user.username + "</td>";
+                            temp += "<td>" + user.lastName + "</td>";
+                            temp += "<td>" + user.email + "</td>";
+                            temp += "<td>" + user.email + "</td>";
+                            temp += '<td>' +
+                                '<a href="findOne/?id=' + user.id + '" class="btn btn-primary eBtn">' +
+                                '<i class="bi bi-pencil-square"></i>' +
+                                '</a></td>';
+                            temp += "<td>" + user.email + "</td>";
+                            temp += "</tr>";
+                        });
+
+                        console.log(temp);
+
+                        document.getElementById("tableData").innerHTML = temp;
+
+                        document.ready(function () {
+                            $('.table .eBtn').on('click', function (event) {
+                                event.preventDefault();
+                                var href = $(this).attr('href');
+
+                                $.get(href, function (user, status) {
+                                    $('.myForm #id').val(user.id);
+                                    $('.myForm #username').val(user.username);
+                                    $('.myForm #lastName').val(user.lastName);
+                                    $('.myForm #email').val(user.email);
+                                })
+
+                                $('.user #userProfile');
+                            });
+                        });
+                    }
+                }
+            )
+        }
+    )
+
+
+</script>-->
 
 <!--Update user script-->
 <!--<script type="text/javascript">

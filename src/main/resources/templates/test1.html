@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<!-- create navigation bar ( header) -->
+<header th:insert="layout/general.html :: header"></header>
+
+<!-- Modal -->
+<div class="myFormDelete">
+    <form th:action="@{/admin/rest/user/}" id="deleteUser">
+        <!--        <form th:action="@{/admin/rest/user/{id}(id=${user.id})}" method="DELETE">-->
+        <div class="modal fade" id="exampleModalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" class="form-control" id="id" name="id" value=""/>
+                        <div class="form-group">
+                            <label for="username" class="col-form-label">username:</label>
+                            <input type="text" readonly class="form-control" id="username" name="username" value=""/>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName" class="col-form-label">lastname:</label>
+                            <input type="text" readonly class="form-control" id="lastName" name="lastName" value=""/>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="col-form-label">email:</label>
+                            <input type="text" readonly class="form-control" id="email" name="email" value=""/>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label for="roles" class="col-form-label">roles:</label>
+                                <!--                                    <input type="text" readonly class="form-control" id="roles" name="roles" value=""/>-->
+                                <!--                                    <label for="roles" class="col-form-label">roles:</label>-->
+                                <select id="roles" readonly name="roles" multiple size="2" required
+                                        class="form-control">
+                                    <option th:each="initializeRoles:${rolesFromController}"
+                                            th:value="${initializeRoles.getId()}"
+                                            th:text="${initializeRoles.getName()}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-warning" value="Delete"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>User Email</th>
+        <!--        <th>Roles</th>-->
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody id="tableData">
+
+    </tbody>
+</table>
+<button type="button" class="btn btn-info btn-lg" id="myBtn">Open Modal</button>
+<script>
+    // function show() {
+    fetch("http://localhost:8080/admin/rest/users").then(
+        res => {
+            res.json().then(
+                data => {
+                    console.log(data);
+                    if (data.length > 0) {
+                        var temp = "";
+
+                        data.forEach((user) => {
+                            temp += "<tr>";
+                            temp += "<td>" + user.id + "</td>";
+                            temp += "<td>" + user.username + "</td>";
+                            temp += "<td>" + user.lastName + "</td>";
+                            temp += "<td>" + user.email + "</td>";
+                            temp += '<td>' +
+                                '<a href="rest/user/' + user.id + '" class="btn btn-primary eBtn">' +
+                                '<i class="bi bi-pencil-square"></i>' +
+                                '</a></td>';
+                            temp += '<td>' +
+                                '<a href="rest/user/' + user.id + '"  class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">' +
+                                '<i class="bi bi-trash"></i>' +
+                                '</a>';
+                            // '<button type="button" className="btn btn-info btn-lg" id="myBtn">Open Modal</button>';
+                            temp += "</td></tr>";
+                        });
+
+                        console.log(temp);
+
+                        document.getElementById("tableData").innerHTML = temp;
+                    }
+                }
+            )
+        }
+    )
+    // }
+    //
+    // $(document).ready(function () {
+    //     show();
+    //     setInterval('show()', 1000);
+    // });
+
+    $(document).ready(function () {
+        $('.table .eBtnDelete').on('click', function (event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+
+            $.get(href, function (user, status) {
+                $('.myFormDelete #id').val(user.id);
+                $('.myFormDelete #username').val(user.username);
+                $('.myFormDelete #lastName').val(user.lastName);
+                $('.myFormDelete #email').val(user.email);
+                $('.myFormDelete #roles').val(user.roles);
+            })
+
+            $('.myFormDelete #exampleModalDelete').modal();
+        });
+    });
+
+
+</script>
+<!--<script type="text/javascript" th:src="@{/static/js/main.js}"></script>-->
+</body>
+</html>

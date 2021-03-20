@@ -8,13 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @Controller
-public class HelloController {
+public class UserController {
     @Autowired
     private UserService userService;
 
@@ -26,6 +25,12 @@ public class HelloController {
         return "/index";
     }
 
+    @GetMapping(value = {"/admin/test"})
+    public String test(Model model) {
+        model.addAttribute("users", userService.listUsers());
+        return "test1";
+    }
+
     @GetMapping("/admin/users")
     public String userList(Model model) {
         List<User> users = userService.listUsers();
@@ -33,13 +38,11 @@ public class HelloController {
         model.addAttribute("user", user);
         model.addAttribute("rolesFromController", roleService.listRoles());
         model.addAttribute("users", users);
-//        System.out.println(getClass() + " - userList - " + userService.listUsers());
         return "users";
     }
 
     @GetMapping("/profile")
     public String user(@AuthenticationPrincipal User user, Model model) {
-        System.out.println(getClass().getName() + "- user -" + user);
         model.addAttribute("user", user);
         return "profile";
     }
@@ -93,9 +96,9 @@ public class HelloController {
         return "redirect:/admin/users";
     }
 
+
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public String loginPage() {
         return "login";
     }
-
 }

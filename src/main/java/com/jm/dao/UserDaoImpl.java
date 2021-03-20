@@ -47,4 +47,9 @@ public class UserDaoImpl implements UserDao {
         System.out.println("User_role: - " + user.getRoles());
         return user;
     }
+
+    @Override
+    public boolean exists(User user) {
+        return getUserByName(user.getUsername()) != null;
+    }
 }

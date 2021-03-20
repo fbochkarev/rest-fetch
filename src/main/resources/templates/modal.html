@@ -61,7 +61,8 @@
 
     <!-- Modal -->
     <div class="myFormDelete">
-        <form th:action="@{/admin/deleteUser/}" method="POST">
+        <form th:action="@{/admin/rest/user/}" id="deleteUser">
+<!--        <form th:action="@{/admin/rest/user/{id}(id=${user.id})}" method="DELETE">-->
             <div class="modal fade" id="exampleModalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog" role="document">

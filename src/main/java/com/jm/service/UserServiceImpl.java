@@ -43,4 +43,9 @@ public class UserServiceImpl implements UserService {
     public UserDetails getUserByName(String username) {
         return userDao.getUserByName(username);
     }
+
+    @Override
+    public boolean exists(User user) {
+        return userDao.exists(user);
+    }
 }
